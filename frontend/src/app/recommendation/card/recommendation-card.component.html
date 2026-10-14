@@ -1,0 +1,21 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title data-testid="artist-name">{{ recommendation().name }}</mat-card-title>
+
+    @if (recommendation().genre) {
+      <mat-card-subtitle data-testid="artist-genre">{{ recommendation().genre }}</mat-card-subtitle>
+    }
+  </mat-card-header>
+
+  @if (recommendation().reason) {
+    <mat-card-content>
+      <p data-testid="reason">{{ recommendation().reason }}</p>
+    </mat-card-content>
+  }
+
+  <mat-card-actions>
+    <button mat-button (click)="onSave()">Save for later</button>
+
+    <button mat-button (click)="onBlock()">Don't suggest again</button>
+  </mat-card-actions>
+</mat-card>
