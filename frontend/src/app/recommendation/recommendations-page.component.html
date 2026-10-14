@@ -1,0 +1,34 @@
+<h1>Recommendations</h1>
+
+@if (error()) {
+  <p class="error-msg" role="alert">{{ error() }}</p>
+}
+
+<app-generate-button
+  [artistCount]="artistCount()"
+  [loading]="loading()"
+  (generate)="onGenerate()"
+/>
+
+@if (remainingRequests() !== null) {
+  <p class="quota-hint">
+    {{ remainingRequests() }} generation
+    {{ remainingRequests() === 1 ? 'request' : 'requests' }} left today
+  </p>
+}
+
+@if (recommendations().length > 0) {
+  <ul class="recommendation-list">
+    @for (rec of recommendations(); track rec.id) {
+      <li>
+        <app-recommendation-card
+          [recommendation]="rec"
+          (saved)="onSave($event)"
+          (blocked)="onBlock($event)"
+        />
+      </li>
+    }
+  </ul>
+} @else if (!loading()) {
+  <app-recommendations-empty-state />
+}
