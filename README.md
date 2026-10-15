@@ -61,7 +61,7 @@ docker-compose.e2e.yml  MariaDB + Mailpit + backend, for running the full stack 
 
 - JDK 21
 - Node.js (LTS) and npm
-- Podman (to run MariaDB and Mailpit locally)
+- Docker (to run MariaDB and Mailpit locally)
 - An OpenAI API key (for generating recommendations)
 
 ## Configuration
@@ -83,14 +83,14 @@ The backend is configured entirely via environment variables (see `backend/src/m
 | `APP_BACKEND_URL`                 | No       | `http://localhost:8080`   | Backend's own public URL                         |
 | `CORS_ALLOWED_ORIGINS`            | No       | `http://localhost:4200`   | Allowed CORS origin(s)                           |
 
-By default the backend connects to `jdbc:mariadb://localhost:3306/books`. For local development without Podman, either point a local MariaDB instance at that database or use [Mailpit](https://github.com/axllent/mailpit) to catch magic-link emails when `MAIL_HOST`/`MAIL_PORT` aren't overridden - see [Running locally](#running-locally) for the Podman-based option.
+By default the backend connects to `jdbc:mariadb://localhost:3306/books`. For local development without Docker, either point a local MariaDB instance at that database or use [Mailpit](https://github.com/axllent/mailpit) to catch magic-link emails when `MAIL_HOST`/`MAIL_PORT` aren't overridden - see [Running locally](#running-locally) for the Docker-based option.
 
 ## Running locally
 
-The easiest way to get a database and a mail catcher running is via the provided Compose file, which also builds and runs the backend itself:
+The easiest way to get a database and a mail catcher running is via the provided Docker Compose file, which also builds and runs the backend itself:
 
 ```bash
-SPRING_AI_OPENAI_API_KEY=sk-... podman compose -f docker-compose.e2e.yml up -d
+SPRING_AI_OPENAI_API_KEY=sk-... docker compose -f docker-compose.e2e.yml up -d
 ```
 
 This starts:
@@ -109,7 +109,7 @@ npm run start:e2e   # ng serve on port 4201, proxied to the backend on 8081
 
 Open `http://localhost:4201` and sign in with your email - check Mailpit for the magic link.
 
-Alternatively, to run the backend directly (e.g. with your own MariaDB instance) instead of via Podman:
+Alternatively, to run the backend directly (e.g. with your own MariaDB instance) instead of via Docker:
 
 ```bash
 cd backend
@@ -129,12 +129,12 @@ Open `http://localhost:4200`.
 **Backend** (from `backend/`):
 
 ```bash
-./mvnw test -Pe2e     # e2e tests (requires the Podman Compose stack running)
+./mvnw test -Pe2e     # e2e tests (requires the Docker Compose stack running)
 ```
 
 **Frontend** (from `frontend/`):
 
 ```bash
-npm run e2e           # e2e tests (Playwright; requires the Podman Compose stack running)
+npm run e2e           # e2e tests (Playwright; requires the Docker Compose stack running)
 npm run e2e:ui         # e2e tests with the Playwright UI
 ```
