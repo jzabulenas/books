@@ -1,0 +1,21 @@
+<h1>Saved Books</h1>
+
+@if (error()) {
+  <p class="error-msg" role="alert">{{ error() }}</p>
+}
+
+@if (savedBooks().length === 0) {
+  <app-empty-state />
+} @else {
+  <ul class="saved-list">
+    @for (book of savedBooks(); track book.id) {
+      <li>
+        <app-saved-book-card
+          [savedBook]="book"
+          (markedRead)="onMarkRead($event)"
+          (removed)="onRemove($event)"
+        />
+      </li>
+    }
+  </ul>
+}

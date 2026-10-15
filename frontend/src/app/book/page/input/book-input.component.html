@@ -1,0 +1,14 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <mat-form-field appearance="outline">
+    <mat-label>Book title</mat-label>
+    <input matInput type="text" formControlName="title" autocomplete="off" />
+
+    @if (titleControl.hasError('required') && titleControl.touched) {
+      <mat-error>Book title is required</mat-error>
+    } @else if (titleControl.hasError('maxlength') && titleControl.touched) {
+      <mat-error>Title must be 255 characters or fewer</mat-error>
+    }
+  </mat-form-field>
+
+  <button mat-flat-button type="submit">Add</button>
+</form>

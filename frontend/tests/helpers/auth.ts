@@ -11,5 +11,5 @@ export async function loginAs(page: Page, email: string): Promise<void> {
   const magicLink = await getMagicLink(email);
 
   await page.goto(magicLink);
-  await page.waitForURL('**/app/artists');
+  await page.waitForURL('**/app/books');
 }

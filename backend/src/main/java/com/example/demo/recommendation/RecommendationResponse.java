@@ -4,7 +4,7 @@ import org.jspecify.annotations.Nullable;
 
 record RecommendationResponse(
   Long id,
-  String name,
-  @Nullable String genre,
-  @Nullable String reason
+  String title,
+  @Nullable String author,
+  @Nullable String description
 ) {}

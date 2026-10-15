@@ -20,202 +20,202 @@ import org.junit.jupiter.api.Test;
 class RecommendationE2ETest extends E2ESupport {
 
   @Test
-  void generateRecommendations_withThreeLikedArtists_returnsExactlyFiveArtists() {
+  void generateRecommendations_withThreeReadBooks_returnsExactlyFiveBooks() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
     spec
       .post("/api/v1/recommendations/generate")
       .then()
       .statusCode(200)
       .body("$", hasSize(5))
-      .body("name", everyItem(not(emptyOrNullString())))
-      .body("genre", everyItem(anyOf(nullValue(), not(emptyString()))))
-      .body("reason", everyItem(not(emptyOrNullString())));
+      .body("title", everyItem(not(emptyOrNullString())))
+      .body("author", everyItem(anyOf(nullValue(), not(emptyString()))))
+      .body("description", everyItem(not(emptyOrNullString())));
   }
 
   @Test
-  void getRecommendations_afterGenerate_returnsSameArtists() {
+  void getRecommendations_afterGenerate_returnsSameBooks() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
-    List<String> generatedNames = spec
+    List<String> generatedTitles = spec
       .post("/api/v1/recommendations/generate")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
+      .getList("title", String.class);
 
     spec
       .get("/api/v1/recommendations")
       .then()
       .statusCode(200)
-      .body("name", equalTo(generatedNames));
+      .body("title", equalTo(generatedTitles));
   }
 
   @Test
-  void getRecommendations_afterSavingArtist_excludesItFromTheList() {
+  void getRecommendations_afterSavingBook_excludesItFromTheList() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
-    List<String> generatedNames = spec
+    List<String> generatedTitles = spec
       .post("/api/v1/recommendations/generate")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
-    String saved = generatedNames.get(0);
+      .getList("title", String.class);
+    String saved = generatedTitles.get(0);
 
     spec
       .body(
         """
-        {"name": "%s"}
+        {"title": "%s"}
         """.formatted(saved)
       )
-      .post("/api/v1/saved-artists")
+      .post("/api/v1/saved-books")
       .then()
       .statusCode(201);
 
-    List<String> remainingNames = spec
+    List<String> remainingTitles = spec
       .get("/api/v1/recommendations")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
+      .getList("title", String.class);
 
-    assertThat(remainingNames, not(hasItem(saved)));
-    assertThat(remainingNames, hasSize(generatedNames.size() - 1));
+    assertThat(remainingTitles, not(hasItem(saved)));
+    assertThat(remainingTitles, hasSize(generatedTitles.size() - 1));
   }
 
   @Test
-  void getRecommendations_afterBlockingArtist_excludesItFromTheList() {
+  void getRecommendations_afterBlockingBook_excludesItFromTheList() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
-    List<String> generatedNames = spec
+    List<String> generatedTitles = spec
       .post("/api/v1/recommendations/generate")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
-    String blocked = generatedNames.get(0);
+      .getList("title", String.class);
+    String blocked = generatedTitles.get(0);
 
     spec
       .body(
         """
-        {"name": "%s"}
+        {"title": "%s"}
         """.formatted(blocked)
       )
-      .post("/api/v1/blocked-artists")
+      .post("/api/v1/blocked-books")
       .then()
       .statusCode(204);
 
-    List<String> remainingNames = spec
+    List<String> remainingTitles = spec
       .get("/api/v1/recommendations")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
+      .getList("title", String.class);
 
-    assertThat(remainingNames, not(hasItem(blocked)));
-    assertThat(remainingNames, hasSize(generatedNames.size() - 1));
+    assertThat(remainingTitles, not(hasItem(blocked)));
+    assertThat(remainingTitles, hasSize(generatedTitles.size() - 1));
   }
 
   @Test
-  void getRecommendations_afterRemovingSavedArtist_excludesItFromTheList() {
+  void getRecommendations_afterRemovingSavedBook_excludesItFromTheList() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
-    List<String> generatedNames = spec
+    List<String> generatedTitles = spec
       .post("/api/v1/recommendations/generate")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
-    String removed = generatedNames.get(0);
+      .getList("title", String.class);
+    String removed = generatedTitles.get(0);
 
     int savedId = spec
       .body(
         """
-        {"name": "%s"}
+        {"title": "%s"}
         """.formatted(removed)
       )
-      .post("/api/v1/saved-artists")
+      .post("/api/v1/saved-books")
       .then()
       .statusCode(201)
       .extract()
       .path("id");
 
     spec
-      .delete("/api/v1/saved-artists/" + savedId)
+      .delete("/api/v1/saved-books/" + savedId)
       .then()
       .statusCode(204);
 
-    List<String> remainingNames = spec
+    List<String> remainingTitles = spec
       .get("/api/v1/recommendations")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
+      .getList("title", String.class);
 
-    assertThat(remainingNames, not(hasItem(removed)));
-    assertThat(remainingNames, hasSize(generatedNames.size() - 1));
+    assertThat(remainingTitles, not(hasItem(removed)));
+    assertThat(remainingTitles, hasSize(generatedTitles.size() - 1));
   }
 
   @Test
-  void getRecommendations_afterLikingSavedArtist_excludesItFromTheList() {
+  void getRecommendations_afterMarkingSavedBookAsRead_excludesItFromTheList() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
-    List<String> generatedNames = spec
+    List<String> generatedTitles = spec
       .post("/api/v1/recommendations/generate")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
-    String liked = generatedNames.get(0);
+      .getList("title", String.class);
+    String read = generatedTitles.get(0);
 
     int savedId = spec
       .body(
         """
-        {"name": "%s"}
-        """.formatted(liked)
+        {"title": "%s"}
+        """.formatted(read)
       )
-      .post("/api/v1/saved-artists")
+      .post("/api/v1/saved-books")
       .then()
       .statusCode(201)
       .extract()
       .path("id");
 
     spec
-      .post("/api/v1/saved-artists/" + savedId + "/like")
+      .post("/api/v1/saved-books/" + savedId + "/read")
       .then()
       .statusCode(204);
 
-    List<String> remainingNames = spec
+    List<String> remainingTitles = spec
       .get("/api/v1/recommendations")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
+      .getList("title", String.class);
 
-    assertThat(remainingNames, not(hasItem(liked)));
-    assertThat(remainingNames, hasSize(generatedNames.size() - 1));
+    assertThat(remainingTitles, not(hasItem(read)));
+    assertThat(remainingTitles, hasSize(generatedTitles.size() - 1));
   }
 
   @Test
   void generateTwice_replacesOldRecommendations() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
     List<Integer> firstIds = spec
       .post("/api/v1/recommendations/generate")
@@ -242,121 +242,121 @@ class RecommendationE2ETest extends E2ESupport {
   }
 
   @Test
-  void generateRecommendations_afterBlockingArtist_neverSuggestsItAgain() {
+  void generateRecommendations_afterBlockingBook_neverSuggestsItAgain() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
-    List<String> firstNames = spec
+    List<String> firstTitles = spec
       .post("/api/v1/recommendations/generate")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
-    String blocked = firstNames.get(0);
+      .getList("title", String.class);
+    String blocked = firstTitles.get(0);
 
     spec
       .body(
         """
-        {"name": "%s"}
+        {"title": "%s"}
         """.formatted(blocked)
       )
-      .post("/api/v1/blocked-artists")
+      .post("/api/v1/blocked-books")
       .then()
       .statusCode(204);
 
-    List<String> secondNames = spec
+    List<String> secondTitles = spec
       .post("/api/v1/recommendations/generate")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
+      .getList("title", String.class);
 
-    assertThat(secondNames, not(hasItem(blocked)));
+    assertThat(secondTitles, not(hasItem(blocked)));
   }
 
   @Test
-  void generateRecommendations_afterSavingArtist_neverSuggestsItAgain() {
+  void generateRecommendations_afterSavingBook_neverSuggestsItAgain() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
-    List<String> firstNames = spec
+    List<String> firstTitles = spec
       .post("/api/v1/recommendations/generate")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
-    String saved = firstNames.get(0);
+      .getList("title", String.class);
+    String saved = firstTitles.get(0);
 
     spec
       .body(
         """
-        {"name": "%s"}
+        {"title": "%s"}
         """.formatted(saved)
       )
-      .post("/api/v1/saved-artists")
+      .post("/api/v1/saved-books")
       .then()
       .statusCode(201);
 
-    List<String> secondNames = spec
+    List<String> secondTitles = spec
       .post("/api/v1/recommendations/generate")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
+      .getList("title", String.class);
 
-    assertThat(secondNames, not(hasItem(saved)));
+    assertThat(secondTitles, not(hasItem(saved)));
   }
 
   @Test
-  void generateRecommendations_afterRemovingSavedArtist_neverSuggestsItAgain() {
+  void generateRecommendations_afterRemovingSavedBook_neverSuggestsItAgain() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
-    List<String> firstNames = spec
+    List<String> firstTitles = spec
       .post("/api/v1/recommendations/generate")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
-    String removed = firstNames.get(0);
+      .getList("title", String.class);
+    String removed = firstTitles.get(0);
 
     int savedId = spec
       .body(
         """
-        {"name": "%s"}
+        {"title": "%s"}
         """.formatted(removed)
       )
-      .post("/api/v1/saved-artists")
+      .post("/api/v1/saved-books")
       .then()
       .statusCode(201)
       .extract()
       .path("id");
 
     spec
-      .delete("/api/v1/saved-artists/" + savedId)
+      .delete("/api/v1/saved-books/" + savedId)
       .then()
       .statusCode(204);
 
-    List<String> secondNames = spec
+    List<String> secondTitles = spec
       .post("/api/v1/recommendations/generate")
       .then()
       .statusCode(200)
       .extract()
       .jsonPath()
-      .getList("name", String.class);
+      .getList("title", String.class);
 
-    assertThat(secondNames, not(hasItem(removed)));
+    assertThat(secondTitles, not(hasItem(removed)));
   }
 
   @Test
-  void generate_withFewerThanThreeLikedArtists_returns422() {
+  void generate_withFewerThanThreeReadBooks_returns422() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead");
+    addReadBooks(spec, "Dune", "Neuromancer");
 
     spec.post("/api/v1/recommendations/generate").then().statusCode(422);
   }

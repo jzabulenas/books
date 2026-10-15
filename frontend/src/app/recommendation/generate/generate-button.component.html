@@ -14,9 +14,9 @@
     }
   </button>
 
-  @if (needsMoreArtists()) {
+  @if (needsMoreBooks()) {
     <p class="hint">
-      Add {{ remaining() }} more {{ remaining() === 1 ? 'artist' : 'artists' }} to generate
+      Add {{ remaining() }} more {{ remaining() === 1 ? 'book' : 'books' }} to generate
       recommendations
     </p>
   }

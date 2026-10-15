@@ -1,0 +1,11 @@
+<h1>My Books</h1>
+
+<p class="book-count">{{ count() }} {{ count() === 1 ? 'book' : 'books' }} added</p>
+
+@if (error()) {
+  <p class="error-msg" role="alert">{{ error() }}</p>
+}
+
+<app-book-input (bookAdded)="onBookAdded($event)" />
+
+<app-book-list [books]="books()" (deleted)="onBookDeleted($event)" />

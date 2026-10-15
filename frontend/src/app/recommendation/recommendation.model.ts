@@ -1,6 +1,6 @@
 export interface Recommendation {
   id: number;
-  name: string;
-  genre: string | null;
-  reason: string | null;
+  title: string;
+  author: string | null;
+  description: string | null;
 }

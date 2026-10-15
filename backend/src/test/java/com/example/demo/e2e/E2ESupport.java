@@ -26,17 +26,17 @@ class E2ESupport {
 
   static final String DB_URL = System.getenv().getOrDefault(
     "DB_URL",
-    "jdbc:mariadb://localhost:3307/music"
+    "jdbc:mariadb://localhost:3307/books"
   );
 
   static final String DB_USERNAME = System.getenv().getOrDefault(
     "DB_USERNAME",
-    "music"
+    "books"
   );
 
   static final String DB_PASSWORD = System.getenv().getOrDefault(
     "DB_PASSWORD",
-    "music"
+    "books"
   );
 
   static String uniqueEmail() {
@@ -137,15 +137,15 @@ class E2ESupport {
     }
   }
 
-  static void addLikedArtists(RequestSpecification spec, String... names) {
-    for (String name : names) {
+  static void addReadBooks(RequestSpecification spec, String... titles) {
+    for (String title : titles) {
       spec
         .body(
           """
-          {"name": "%s"}
-          """.formatted(name)
+          {"title": "%s"}
+          """.formatted(title)
         )
-        .post("/api/v1/liked-artists")
+        .post("/api/v1/read-books")
         .then()
         .statusCode(201);
     }

@@ -17,14 +17,14 @@ class Recommendation {
   private Long userId;
 
   @Column(nullable = false)
-  private String name;
+  private String title;
 
   @Nullable
-  private String genre;
+  private String author;
 
   @Column(length = 1000)
   @Nullable
-  private String reason;
+  private String description;
 
   @Column(nullable = false, updatable = false)
   private Instant createdAt;
@@ -34,14 +34,14 @@ class Recommendation {
 
   Recommendation(
     Long userId,
-    String name,
-    @Nullable String genre,
-    @Nullable String reason
+    String title,
+    @Nullable String author,
+    @Nullable String description
   ) {
     this.userId = userId;
-    this.name = name;
-    this.genre = genre;
-    this.reason = reason;
+    this.title = title;
+    this.author = author;
+    this.description = description;
     this.createdAt = Instant.now();
   }
 
@@ -49,17 +49,17 @@ class Recommendation {
     return this.id;
   }
 
-  String getName() {
-    return this.name;
+  String getTitle() {
+    return this.title;
   }
 
   @Nullable
-  String getGenre() {
-    return this.genre;
+  String getAuthor() {
+    return this.author;
   }
 
   @Nullable
-  String getReason() {
-    return this.reason;
+  String getDescription() {
+    return this.description;
   }
 }
