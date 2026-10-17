@@ -39,6 +39,21 @@ test('submitting a blank title shows a validation error', async ({ page }) => {
   await expect(page.getByText('Book title is required')).toBeVisible();
 });
 
+test('adding a book with title and author shows it as a chip in the list', async ({ page }) => {
+  await addBook(page, 'Dracula by Bram Stoker');
+
+  await expect(
+    page.getByRole('listitem').filter({ hasText: 'Dracula by Bram Stoker' }),
+  ).toBeVisible();
+  await expect(page.getByText('1 book added')).toBeVisible();
+});
+
+test('focusing the empty input shows an example placeholder', async ({ page }) => {
+  await page.getByLabel('Book title').click();
+
+  await expect(page.getByPlaceholder('e.g. Dracula by Bram Stoker')).toBeVisible();
+});
+
 test('adding a book that already exists shows an error', async ({ page }) => {
   await addBook(page, 'Dune');
   await addBook(page, 'Dune');
