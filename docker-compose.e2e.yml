@@ -22,7 +22,7 @@ services:
   backend:
     build: ./backend
     ports:
-      - "8081:8080"
+      - "8081:8082"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/books
       MARIADB_USERNAME: books
@@ -30,7 +30,7 @@ services:
       MAIL_HOST: mailpit
       SPRING_AI_OPENAI_API_KEY: ${SPRING_AI_OPENAI_API_KEY}
       APP_BASE_URL: http://localhost:4201
-      APP_BACKEND_URL: http://localhost:8080
+      APP_BACKEND_URL: http://localhost:8082
       CORS_ALLOWED_ORIGINS: http://localhost:4201
     depends_on:
       mariadb:
@@ -38,7 +38,7 @@ services:
       mailpit:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "curl -s http://localhost:8080/error -o /dev/null"]
+      test: ["CMD-SHELL", "curl -s http://localhost:8082/error -o /dev/null"]
       start_period: 30s
       interval: 5s
       retries: 12

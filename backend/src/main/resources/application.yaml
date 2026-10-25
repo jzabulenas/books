@@ -54,7 +54,7 @@ spring:
 
 app:
   base-url: ${APP_BASE_URL:http://localhost:4200}
-  backend-url: ${APP_BACKEND_URL:http://localhost:8080}
+  backend-url: ${APP_BACKEND_URL:http://localhost:8082}
   mail-from: ${MAIL_FROM:noreply@book-rec.local}
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
@@ -62,7 +62,7 @@ app:
     daily-limit: ${RECOMMENDATION_DAILY_LIMIT:5}
 
 server:
-  port: 8080
+  port: 8082
   error:
     include-stacktrace: never
     include-message: never
