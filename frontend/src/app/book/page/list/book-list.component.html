@@ -1,0 +1,9 @@
+@if (books().length > 0) {
+  <ul class="chip-list" aria-label="Read books">
+    @for (book of books(); track book.id) {
+      <li>
+        <app-book-chip [book]="book" (deleted)="deleted.emit($event)" />
+      </li>
+    }
+  </ul>
+}

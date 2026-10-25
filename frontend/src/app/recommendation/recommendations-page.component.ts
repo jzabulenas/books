@@ -8,11 +8,11 @@ import {
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ArtistService } from '../artist/artist.service';
+import { BookService } from '../book/book.service';
 import { AuthService } from '../core/auth.service';
 import { RecommendationService } from './recommendation.service';
-import { SavedArtistService } from '../saved/saved-artist.service';
-import { BlockedArtistService } from '../blocked/blocked-artist.service';
+import { SavedBookService } from '../saved/saved-book.service';
+import { BlockedBookService } from '../blocked/blocked-book.service';
 import { GenerateButtonComponent } from './generate/generate-button.component';
 import { RecommendationCardComponent } from './card/recommendation-card.component';
 import { RecommendationsEmptyStateComponent } from './empty/recommendations-empty-state.component';
@@ -30,13 +30,13 @@ import { Recommendation } from './recommendation.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecommendationsPageComponent implements OnInit {
-  private readonly artistService = inject(ArtistService);
+  private readonly bookService = inject(BookService);
   private readonly recommendationService = inject(RecommendationService);
-  private readonly savedArtistService = inject(SavedArtistService);
-  private readonly blockedArtistService = inject(BlockedArtistService);
+  private readonly savedBookService = inject(SavedBookService);
+  private readonly blockedBookService = inject(BlockedBookService);
   private readonly authService = inject(AuthService);
 
-  protected readonly artistCount = computed(() => this.artistService.artists().length);
+  protected readonly bookCount = computed(() => this.bookService.books().length);
   protected readonly recommendations = this.recommendationService.recommendations;
   protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
@@ -45,8 +45,8 @@ export class RecommendationsPageComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.artistService.load().subscribe({
-      error: () => this.error.set('Failed to load artists.'),
+    this.bookService.load().subscribe({
+      error: () => this.error.set('Failed to load books.'),
     });
 
     this.recommendationService.load().subscribe({
@@ -75,16 +75,16 @@ export class RecommendationsPageComponent implements OnInit {
   protected onSave(recommendation: Recommendation): void {
     this.reviewRecommendation(
       recommendation,
-      this.savedArtistService.save(recommendation.name, recommendation.genre),
-      'Failed to save artist.',
+      this.savedBookService.save(recommendation.title, recommendation.author),
+      'Failed to save book.',
     );
   }
 
   protected onBlock(recommendation: Recommendation): void {
     this.reviewRecommendation(
       recommendation,
-      this.blockedArtistService.block(recommendation.name),
-      'Failed to block artist.',
+      this.blockedBookService.block(recommendation.title),
+      'Failed to block book.',
     );
   }
 

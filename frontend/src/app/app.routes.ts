@@ -19,9 +19,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: 'artists',
+        path: 'books',
         loadComponent: () =>
-          import('./artist/page/artists-page.component').then((m) => m.ArtistsPageComponent),
+          import('./book/page/books-page.component').then((m) => m.BooksPageComponent),
       },
       {
         path: 'recommendations',
@@ -33,11 +33,11 @@ export const routes: Routes = [
       {
         path: 'saved',
         loadComponent: () =>
-          import('./saved/saved-artists-page.component').then((m) => m.SavedArtistsPageComponent),
+          import('./saved/saved-books-page.component').then((m) => m.SavedBooksPageComponent),
       },
-      { path: '', redirectTo: 'artists', pathMatch: 'full' },
-      { path: '**', redirectTo: 'artists' },
+      { path: '', redirectTo: 'books', pathMatch: 'full' },
+      { path: '**', redirectTo: 'books' },
     ],
   },
-  { path: '', redirectTo: '/app/artists', pathMatch: 'full' },
+  { path: '', redirectTo: '/app/books', pathMatch: 'full' },
 ];

@@ -1,6 +1,6 @@
 import { type Page, expect, test } from '@playwright/test';
 
-import { addArtist } from './artists';
+import { addBook } from './books';
 
 export function recommendationCards(page: Page) {
   return page.getByRole('list').getByRole('listitem');
@@ -9,9 +9,9 @@ export function recommendationCards(page: Page) {
 export async function generateRecommendations(page: Page): Promise<void> {
   test.setTimeout(60_000);
 
-  await addArtist(page, 'Radiohead');
-  await addArtist(page, 'Portishead');
-  await addArtist(page, 'Massive Attack');
+  await addBook(page, 'Dune');
+  await addBook(page, 'Neuromancer');
+  await addBook(page, 'The Left Hand of Darkness');
 
   const initialLoad = page.waitForResponse(
     (response) =>

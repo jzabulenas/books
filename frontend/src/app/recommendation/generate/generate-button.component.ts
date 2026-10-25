@@ -10,13 +10,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GenerateButtonComponent {
-  artistCount = input.required<number>();
+  bookCount = input.required<number>();
   loading = input<boolean>(false);
   generate = output<void>();
 
-  protected readonly needsMoreArtists = computed(() => this.artistCount() < 3);
-  protected readonly remaining = computed(() => 3 - this.artistCount());
-  protected readonly isDisabled = computed(() => this.loading() || this.needsMoreArtists());
+  protected readonly needsMoreBooks = computed(() => this.bookCount() < 3);
+  protected readonly remaining = computed(() => 3 - this.bookCount());
+  protected readonly isDisabled = computed(() => this.loading() || this.needsMoreBooks());
 
   protected onGenerate(): void {
     this.generate.emit();

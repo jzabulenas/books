@@ -10,11 +10,11 @@ test.beforeEach(async ({ page }) => {
   await loginAs(page, uniqueEmail());
 });
 
-test('Artists nav link navigates to the artists page', async ({ page }) => {
+test('Books nav link navigates to the books page', async ({ page }) => {
   await page.goto('/app/recommendations');
-  await page.getByRole('link', { name: 'Artists' }).click();
+  await page.getByRole('link', { name: 'Books' }).click();
 
-  await expect(page).toHaveURL(/\/app\/artists/);
+  await expect(page).toHaveURL(/\/app\/books/);
 });
 
 test('Recommendations nav link navigates to the recommendations page', async ({ page }) => {
@@ -30,7 +30,7 @@ test('Saved nav link navigates to the saved page', async ({ page }) => {
 });
 
 test('the active nav link has a distinct visual style from inactive links', async ({ page }) => {
-  const activeLink = page.getByRole('link', { name: 'Artists' });
+  const activeLink = page.getByRole('link', { name: 'Books' });
   const inactiveLink = page.getByRole('link', { name: 'Recommendations' });
 
   const [activeColor, inactiveColor] = await Promise.all([

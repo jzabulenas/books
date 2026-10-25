@@ -49,7 +49,7 @@ class SecurityConfig {
           .tokenGenerationSuccessHandler(magicLinkSuccessHandler)
           .successHandler(
             new SimpleUrlAuthenticationSuccessHandler(
-              this.baseUrl + "/app/artists"
+              this.baseUrl + "/app/books"
             )
           )
       )

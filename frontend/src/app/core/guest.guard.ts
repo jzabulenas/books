@@ -9,5 +9,5 @@ export const guestGuard: CanActivateFn = () => {
 
   return authService
     .fetchCurrentUser()
-    .pipe(map((user) => (user === null ? true : router.createUrlTree(['/app/artists']))));
+    .pipe(map((user) => (user === null ? true : router.createUrlTree(['/app/books']))));
 };

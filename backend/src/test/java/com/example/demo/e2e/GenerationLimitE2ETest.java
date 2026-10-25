@@ -25,7 +25,7 @@ class GenerationLimitE2ETest extends E2ESupport {
   @Test
   void me_afterOneGeneration_returnsFourRemainingRequests() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
     spec.post("/api/v1/recommendations/generate").then().statusCode(200);
 
@@ -40,7 +40,7 @@ class GenerationLimitE2ETest extends E2ESupport {
   @Test
   void generate_afterFiveGenerations_returns429() {
     RequestSpecification spec = login(uniqueEmail());
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
     for (int i = 0; i < 5; i++) {
       spec.post("/api/v1/recommendations/generate").then().statusCode(200);
@@ -53,7 +53,7 @@ class GenerationLimitE2ETest extends E2ESupport {
   void generate_asAdmin_generatesUnlimitedAndMeReturnsNullRemainingRequests() {
     String email = uniqueEmail();
     RequestSpecification spec = login(email);
-    addLikedArtists(spec, "Radiohead", "Portishead", "Massive Attack");
+    addReadBooks(spec, "Dune", "Neuromancer", "The Left Hand of Darkness");
 
     promoteToAdmin(email);
 

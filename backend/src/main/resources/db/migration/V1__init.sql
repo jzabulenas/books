@@ -10,31 +10,31 @@ CREATE TABLE users (
     created_at DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6)
 );
 
-CREATE TABLE liked_artists (
+CREATE TABLE read_books (
     id       BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id  BIGINT       NOT NULL,
-    name     VARCHAR(255) NOT NULL,
+    title    VARCHAR(255) NOT NULL,
     added_at DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-    CONSTRAINT fk_la_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT uq_la_user_name UNIQUE (user_id, name)
+    CONSTRAINT fk_rb_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT uq_rb_user_title UNIQUE (user_id, title)
 );
 
 CREATE TABLE recommendations (
-    id         BIGINT        AUTO_INCREMENT PRIMARY KEY,
-    user_id    BIGINT        NOT NULL,
-    name       VARCHAR(255)  NOT NULL,
-    genre      VARCHAR(255),
-    reason     VARCHAR(1000),
-    created_at DATETIME(6)   NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    id          BIGINT        AUTO_INCREMENT PRIMARY KEY,
+    user_id     BIGINT        NOT NULL,
+    title       VARCHAR(255)  NOT NULL,
+    author      VARCHAR(255),
+    description VARCHAR(1000),
+    created_at  DATETIME(6)   NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     CONSTRAINT fk_rec_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE TABLE saved_artists (
+CREATE TABLE saved_books (
     id       BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id  BIGINT       NOT NULL,
-    name     VARCHAR(255) NOT NULL,
-    genre    VARCHAR(255),
+    title    VARCHAR(255) NOT NULL,
+    author   VARCHAR(255),
     saved_at DATETIME(6)  NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-    CONSTRAINT fk_sa_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT uq_sa_user_name UNIQUE (user_id, name)
+    CONSTRAINT fk_sb_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT uq_sb_user_title UNIQUE (user_id, title)
 );

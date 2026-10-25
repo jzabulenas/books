@@ -19,7 +19,7 @@
 - Use `NgOptimizedImage` for all static images.
   - `NgOptimizedImage` does not work for inline base64 images.
 - When creating components, place and separate them (component, template and css) in logical and connected folder order, such as:
-  - `artist`
+  - `book`
     - `page`
       - `input`
       - `list`

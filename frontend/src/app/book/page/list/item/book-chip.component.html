@@ -1,0 +1,6 @@
+<mat-chip (removed)="onRemove()">
+  {{ book().title }}
+  <button matChipRemove [attr.aria-label]="'Remove ' + book().title">
+    <mat-icon>cancel</mat-icon>
+  </button>
+</mat-chip>
