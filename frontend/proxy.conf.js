@@ -1,10 +1,10 @@
 // Forwards matched paths to the Spring Boot backend during development.
 // Not used in production — nginx handles routing there.
 module.exports = {
-  '/api': { target: 'http://localhost:8080' },
-  '/ott/generate': { target: 'http://localhost:8080' },
+  '/api': { target: 'http://localhost:8082' },
+  '/ott/generate': { target: 'http://localhost:8082' },
   '/login/ott': {
-    target: 'http://localhost:8080',
+    target: 'http://localhost:8082',
     // `bypass` is a fixed option name recognised by http-proxy-middleware.
     // Returning a path skips the proxy and serves that file instead.
     // GET /login/ott is the Angular route (magic link landing page), so serve
@@ -18,5 +18,5 @@ module.exports = {
       }
     },
   },
-  '/logout': { target: 'http://localhost:8080' },
+  '/logout': { target: 'http://localhost:8082' },
 };

@@ -80,7 +80,7 @@ The backend is configured entirely via environment variables (see `backend/src/m
 | `MAIL_STARTTLS`                   | No       | `false`                   | Whether to use STARTTLS                          |
 | `MAIL_FROM`                       | No       | `noreply@book-rec.local`  | From-address for magic-link emails               |
 | `APP_BASE_URL`                    | No       | `http://localhost:4200`   | Frontend base URL, used to build magic-link URLs |
-| `APP_BACKEND_URL`                 | No       | `http://localhost:8080`   | Backend's own public URL                         |
+| `APP_BACKEND_URL`                 | No       | `http://localhost:8082`   | Backend's own public URL                         |
 | `CORS_ALLOWED_ORIGINS`            | No       | `http://localhost:4200`   | Allowed CORS origin(s)                           |
 
 By default the backend connects to `jdbc:mariadb://localhost:3306/books`. For local development without Docker, either point a local MariaDB instance at that database or use [Mailpit](https://github.com/axllent/mailpit) to catch magic-link emails when `MAIL_HOST`/`MAIL_PORT` aren't overridden - see [Running locally](#running-locally) for the Docker-based option.
@@ -119,7 +119,7 @@ MARIADB_USERNAME=books MARIADB_PASSWORD=books SPRING_AI_OPENAI_API_KEY=sk-... ./
 ```bash
 cd frontend
 npm install
-npm start   # ng serve on port 4200, expects the backend on 8080
+npm start   # ng serve on port 4200, expects the backend on 8082
 ```
 
 Open `http://localhost:4200`.
