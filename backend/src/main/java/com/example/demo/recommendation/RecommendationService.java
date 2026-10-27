@@ -3,6 +3,7 @@ package com.example.demo.recommendation;
 import com.example.demo.blocked.BlockedBookService;
 import com.example.demo.book.ReadBookService;
 import com.example.demo.dismissed.DismissedBookService;
+import com.example.demo.recommendation.ai.AiRecommendationException;
 import com.example.demo.recommendation.ai.BookRecommendationClient;
 import com.example.demo.recommendation.ai.RecommendedBook;
 import com.example.demo.saved.SavedBookService;
@@ -92,11 +93,19 @@ class RecommendationService {
       dismissedTitles.stream()
     ).toList();
 
-    List<RecommendedBook> suggested = this.aiClient.recommend(
-      titles,
-      rejectedTitles,
-      savedTitles
-    );
+    List<RecommendedBook> suggested;
+
+    try {
+      suggested = this.aiClient.recommend(titles, rejectedTitles, savedTitles);
+    } catch (AiRecommendationException e) {
+      // 502 signals an upstream failure: the AI provider was unreachable or its
+      // output stayed unusable even after the client's validation retries. A
+      // failed generation does not consume the daily quota, so the user can retry.
+      throw new ResponseStatusException(
+        HttpStatusCode.valueOf(502),
+        "Recommendation generation failed, please try again"
+      );
+    }
 
     Set<String> excludedLower = this.excludedTitlesLower(userId);
 

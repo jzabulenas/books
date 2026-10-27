@@ -26,35 +26,52 @@ public class BookRecommendationClient {
       ? "none"
       : String.join(", ", savedBooks);
 
-    RecommendedBookResponse response = this.chatClient
-      .prompt()
-      .user(u ->
-        u
-          .text(
-            """
-            I've read these books: {books}.
-            Suggest exactly 5 books I haven't listed that I'd likely enjoy.
-            For each provide: title, author, and a short description of what the book is about.
-            Don't repeat any book from my list.
-            Never suggest any of these books, as I've already rejected them: {rejected}.
-            Never suggest any of these books either, as I've already saved them for later: {saved}.
-            """
-          )
-          .param("books", bookList)
-          .param("rejected", rejectedList)
-          .param("saved", savedList)
-      )
-      .call()
-      .entity(RecommendedBookResponse.class);
+    RecommendedBookResponse response;
+
+    try {
+      // `useProviderStructuredOutput` sends the JSON schema as an API-level
+      // constraint (`response_format: json_schema`), so the provider guarantees
+      // syntactically valid, schema-conformant output instead of merely being
+      // asked for it in the prompt. `validateSchema` is the safety net: if the
+      // response still fails schema validation, the call is retried with the
+      // validation error appended so the model can correct itself.
+      response = this.chatClient
+        .prompt()
+        .user(u ->
+          u
+            .text(
+              """
+              I've read these books: {books}.
+              Suggest exactly 5 books I haven't listed that I'd likely enjoy.
+              For each provide: title, author, and a short description of what the book is about.
+              Don't repeat any book from my list.
+              Never suggest any of these books, as I've already rejected them: {rejected}.
+              Never suggest any of these books either, as I've already saved them for later: {saved}.
+              """
+            )
+            .param("books", bookList)
+            .param("rejected", rejectedList)
+            .param("saved", savedList)
+        )
+        .call()
+        .entity(RecommendedBookResponse.class, spec ->
+          spec.useProviderStructuredOutput().validateSchema()
+        );
+    } catch (RuntimeException e) {
+      throw new AiRecommendationException(
+        "AI recommendation request failed",
+        e
+      );
+    }
 
     if (response == null) {
-      throw new IllegalStateException("AI client returned null response");
+      throw new AiRecommendationException("AI client returned null response");
     }
 
     List<RecommendedBook> books = response.books();
 
     if (books == null) {
-      throw new IllegalStateException("AI client returned null books");
+      throw new AiRecommendationException("AI client returned null books");
     }
 
     return books;
