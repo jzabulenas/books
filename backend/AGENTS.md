@@ -29,7 +29,7 @@
 
 ## Maven
 
-- Sources exist for all dependencies. Do not decompile .class files when researching
+- Sources should exist for all dependencies - if not, download them with Maven. Do not decompile .class files when researching
 
 ## Tests
 
